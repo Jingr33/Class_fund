@@ -2,6 +2,8 @@ import numpy as np
 import customtkinter as ctk
 import tkinter as tk
 from student import Student
+import os 
+import sys
 
 class Logic ():
     """Programm logic."""
@@ -12,13 +14,13 @@ class Logic ():
     def _load_db (self) -> list:
         """Load data from database."""
         lines = []
-        with open("database.txt", "r") as f:
+        with open(self._get_resource_path("database.txt"), "r") as f:
             lines = f.readlines()
         
         students = []
         for i in range(len(lines)):
             data = lines[i].replace("\n", "").split(" ")
-            student = Student(data[0], data[1], data[2], int(data[3]))
+            student = Student(data[0], data[1], data[2], int(float(data[3])))
             students.append(student)
         return students
     
@@ -45,7 +47,7 @@ class Logic ():
 
     def _save_db (self):
         """Save students into the database."""
-        with open("database.txt", "w") as f:
+        with open(self._get_resource_path("database.txt"), "w") as f:
             for student in self.students:
                 line = "{0} {1} {2} {3}\n".format(student.id, student.first_name, student.surname, student.account)
                 f.write(line)
@@ -128,3 +130,14 @@ class Logic ():
         average = np.ceil(sum / len(students))
         checked = self._remove_eachone_amount(average, students)
         return checked
+
+#### FILE PATH ####
+    def _get_resource_path(self, relative_path):
+        """Find the right file path if the app runs in python and also in exe file"""
+        try:
+            # if the app runs in exe file
+            base_path = sys._MEIPASS
+        except AttributeError:
+            # if the app runs in python
+            base_path = os.path.abspath(".")
+        return os.path.join(base_path, relative_path)

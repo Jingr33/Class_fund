@@ -27,14 +27,14 @@ class Frame (ctk.CTkFrame):
         self.create_table_content()
     
     def _create_legend(self, frame : ctk.CTkFrame):
-        ctk.CTkLabel(frame, text = "Pořadí").pack(side=ctk.LEFT, padx=self.padx, pady=self.pady)
-        ctk.CTkLabel(frame, text = "Jméno").pack(side=ctk.LEFT, padx=self.padx, pady=self.pady)
-        ctk.CTkLabel(frame, text = "Přijímení").pack(side=ctk.LEFT, padx=self.padx, pady=self.pady)
+        ctk.CTkLabel(frame, text = "Pořadí").pack(side=ctk.LEFT, padx=self.padx - 2, pady=self.pady)
+        ctk.CTkLabel(frame, text = "Jméno").pack(side=ctk.LEFT, padx=(5, self.padx + 5), pady=self.pady)
+        ctk.CTkLabel(frame, text = "Přijímení").pack(side=ctk.LEFT, padx=(self.padx + 15, self.padx + 8), pady=self.pady)
         ctk.CTkLabel(frame, text = "Částka").pack(side=ctk.LEFT, padx=self.padx, pady=self.pady)
 
         value = tk.BooleanVar(value = False)
         all_marked = ctk.CTkCheckBox(frame, text = "vybrat vše", variable = value, command = lambda: self._mark_all_chb_event(value.get()))
-        all_marked.pack(side = ctk.LEFT, padx=10, pady=self.pady)
+        all_marked.pack(side = ctk.LEFT, padx=(15, 12), pady=self.pady)
 
     def create_table_content(self):
         """Create frames with student informations."""
@@ -57,16 +57,16 @@ class Frame (ctk.CTkFrame):
             student_frame.configure(fg_color = bg_color)
             student_frame.id = ctk.CTkLabel(student_frame, text = self.students[i].id)
             student_frame.id.pack(side = ctk.LEFT, pady=self.pady2)
-            student_frame.id.configure(bg_color = bg_color, width = 55)
+            student_frame.id.configure(bg_color = bg_color, width = 60)
             student_frame.first_name = ctk.CTkLabel(student_frame, text = self.students[i].first_name)
             student_frame.first_name.pack(side = ctk.LEFT, pady=self.pady2)
-            student_frame.first_name.configure(bg_color = bg_color, width = 70)
+            student_frame.first_name.configure(bg_color = bg_color, width = 85, anchor = "w")
             student_frame.surname = ctk.CTkLabel(student_frame, text = self.students[i].surname)
             student_frame.surname.pack(side = ctk.LEFT, pady=self.pady2)
-            student_frame.surname.configure(bg_color = bg_color, width = 70)
+            student_frame.surname.configure(bg_color = bg_color, width = 85, anchor = "w")
             student_frame.account = ctk.CTkLabel(student_frame, text = "{0} Kč".format(int(self.students[i].account)))
             student_frame.account.pack(side = ctk.LEFT, pady=self.pady2)
-            student_frame.account.configure(bg_color = bg_color, width = 75)
+            student_frame.account.configure(bg_color = bg_color, width = 65, anchor = "w")
 
             student_frame.value = tk.BooleanVar(value = self.students[i].choosen)
             student_frame.checkbox = ctk.CTkCheckBox(student_frame, text = "", variable = student_frame.value, command=lambda: self._student_chb_event(self.students[i], self.student_frames[i].value.get()))
