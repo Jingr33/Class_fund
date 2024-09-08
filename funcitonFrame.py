@@ -23,7 +23,7 @@ class Frame (ctk.CTkFrame):
         self.label_width = 150
         self.amount_width = 80
         self.error_color = "red"
-        self.top_pad = (15, 0)
+        self.top_pad = (10, 0)
         
     def _init_widgets (self):
         """Add all functional frame widgets."""
@@ -63,29 +63,37 @@ class Frame (ctk.CTkFrame):
         self.fund_frame.pack(side = ctk.LEFT, fill = ctk.BOTH, expand = True, ipadx = 3, ipady = 3, padx = 0, pady = 0)
         self.fund_frame.configure(fg_color = self.fg_color)
 
+        label0 = ctk.CTkLabel(self.fund_frame, text = "Název platby:")
+        label0.grid(row = 0, column = 0, padx = self.padx, pady = self.top_pad)
+        self.pay_name = ctk.CTkEntry(self.fund_frame, width = 280)
+        self.pay_name.grid(row = 0, column = 1, columnspan = 3, padx = self.padx, pady = self.top_pad)
+
         label5 = ctk.CTkLabel(self.fund_frame, text = "Celková částka: ")
-        label5.grid(row = 0, column = 0, padx = self.padx, pady = self.top_pad)
+        label5.grid(row = 1, column = 0, padx = self.padx, pady = self.top_pad)
         label6 = ctk.CTkLabel(self.fund_frame, text = "Částka na žáka: ")
-        label6.grid(row = 1, column = 0, padx = self.padx, pady = self.top_pad)
+        label6.grid(row = 2, column = 0, padx = self.padx, pady = self.top_pad)
 
         self.sum_var = tk.StringVar(value = "")
         self.sum_input = ctk.CTkEntry(self.fund_frame, textvariable = self.sum_var, width = self.width)
-        self.sum_input.grid(row = 0, column = 1, padx = self.padx, pady = self.top_pad)
+        self.sum_input.grid(row = 1, column = 1, padx = self.padx, pady = self.top_pad)
         self.one_var = tk.StringVar(value = "")
         self.one_input = ctk.CTkEntry(self.fund_frame, textvariable = self.one_var, width = self.width)
-        self.one_input.grid(row = 1, column = 1, padx = self.padx, pady = self.top_pad)
+        self.one_input.grid(row = 2, column = 1, padx = self.padx, pady = self.top_pad)
 
         self.add_sum_button = ctk.CTkButton(self.fund_frame, text = "Přidat", command = self._add_sum_event, width = self.width - 20)
-        self.add_sum_button.grid(row = 0, column = 2, pady = self.top_pad, padx = self.small_padx)
+        self.add_sum_button.grid(row = 1, column = 2, pady = self.top_pad, padx = self.small_padx)
         self.remove_sum_button = ctk.CTkButton(self.fund_frame, text = "Odebrat", command = self._remove_sum_event, width = self.width - 20)
-        self.remove_sum_button.grid(row = 0, column = 3, pady = self.top_pad, padx = self.small_padx)
+        self.remove_sum_button.grid(row = 1, column = 3, pady = self.top_pad, padx = self.small_padx)
         self.add_one_button = ctk.CTkButton(self.fund_frame, text = "Přidat", command = self._add_one_event, width = self.width - 20)
-        self.add_one_button.grid(row = 1, column = 2, pady = self.top_pad, padx = self.small_padx)
+        self.add_one_button.grid(row = 2, column = 2, pady = self.top_pad, padx = self.small_padx)
         self.remove_one_button = ctk.CTkButton(self.fund_frame, text = "Odebrat", command = self._remove_one_event, width = self.width - 20)
-        self.remove_one_button.grid(row = 1, column = 3, pady = self.top_pad, padx = self.small_padx)
+        self.remove_one_button.grid(row = 2, column = 3, pady = self.top_pad, padx = self.small_padx)
 
         self.fund_admin_error = ctk.CTkLabel(self.fund_frame, text = "", font = ("Arial", 12), text_color = self.error_color)
-        self.fund_admin_error.grid(row = 2, column = 0, columnspan = 4, pady = self.top_pad)
+        self.fund_admin_error.grid(row = 3, column = 0, columnspan = 4, pady = self.top_pad)
+
+        self.create_table = ctk.CTkButton(self.fund_frame, text = "Vytvořit tabulku", command = self.logic.create_table)
+        self.create_table.grid(row = 4, column = 2, columnspan = 2)
 
     def _students_admin(self):
         """add frame with a student administration."""

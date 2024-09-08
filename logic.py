@@ -141,3 +141,7 @@ class Logic ():
             # if the app runs in python
             base_path = os.path.abspath(".")
         return os.path.join(base_path, relative_path)
+    
+### CREATE EXEL TABLE ####
+    def create_table(self):
+        """Create an excel table with all students, paymants and account."""
