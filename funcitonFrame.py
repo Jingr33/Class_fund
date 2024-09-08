@@ -137,6 +137,8 @@ class Frame (ctk.CTkFrame):
         sum_value = int(self.sum_var.get())
         self.logic._add_amount_from_sum(sum_value, self.logic._get_marked_students())
         self.fund_admin_error.configure(text = "")
+        self.logic._save_payment(self.pay_name.get(), sum_value, self.logic._get_marked_students(), "add_sum")
+        self._clear_entries([self.sum_input, self.pay_name])
         self._update_students_accounts()
         
     def _remove_sum_event(self):
@@ -149,6 +151,8 @@ class Frame (ctk.CTkFrame):
             self.fund_admin_error.configure(text = "Částku nebylo možné odečíst. Nízký stav účtu žáka.")
         else:
             self.fund_admin_error.configure(text = "")
+            self.logic._save_payment(self.pay_name.get(), sum_value, self.logic._get_marked_students(), "remove_sum")
+            self._clear_entries([self.sum_input, self.pay_name])
             self._update_students_accounts()
 
     def _add_one_event(self):
@@ -158,6 +162,8 @@ class Frame (ctk.CTkFrame):
         one_value = int(self.one_var.get())
         self.logic._add_eachone_amount(one_value, self.logic._get_marked_students())
         self.fund_admin_error.configure(text = "")
+        self.logic._save_payment(self.pay_name.get(), one_value, self.logic._get_marked_students(), "add_one")
+        self._clear_entries([self.one_input, self.pay_name])
         self._update_students_accounts()
 
     def _remove_one_event(self):
@@ -170,6 +176,8 @@ class Frame (ctk.CTkFrame):
             self.fund_admin_error.configure(text = "Částku nebylo možné odečíst. Nízký stav účtu žáka.")
         else:
             self.fund_admin_error.configure(text = "")
+            self.logic._save_payment(self.pay_name.get(), one_value, self.logic._get_marked_students(), "remove_one")
+            self._clear_entries([self.one_input, self.pay_name])
             self._update_students_accounts()           
 
     def _add_student_event (self) -> None:
@@ -179,6 +187,7 @@ class Frame (ctk.CTkFrame):
         if (not first_name or not surname):
             return
         self.logic._add_student(self.var_first_name.get(), self.var_surname.get())
+        self._clear_entries([self.first_name, self.surname])
         self.overview_frame.create_table_content()
 
     def _remove_student_event (self) -> None:
@@ -186,6 +195,7 @@ class Frame (ctk.CTkFrame):
         if (not self._check_int_entry(self.var_remove_id.get(), len(self.students), self.remove_stud_error)):
             return
         self.logic._remove_student(int(self.var_remove_id.get()))
+        self._clear_entries([self.remove_id])
         self.overview_frame.create_table_content()
 
 
@@ -230,3 +240,9 @@ class Frame (ctk.CTkFrame):
         self.ave_lbl.configure(text = "{0} Kč".format(ave))
         self.sum_marked_lbl.configure(text = "{0} Kč".format(marked_sum))
         self.ave_marked_lbl.configure(text = "{0} Kč".format(marked_ave))
+
+    def _clear_entries(self, entries : list):
+        """Set empty string to entered entries."""
+        for entry in entries:
+            entry.delete(0, ctk.END)
+            entry.insert(0, "")

@@ -4,6 +4,8 @@ import tkinter as tk
 from student import Student
 import os 
 import sys
+from datetime import datetime
+import openpyxl
 
 class Logic ():
     """Programm logic."""
@@ -130,6 +132,38 @@ class Logic ():
         average = np.ceil(sum / len(students))
         checked = self._remove_eachone_amount(average, students)
         return checked
+
+#### SAVE PAYMENTS #### 
+    def _save_payment(self, name : str, value : int, students : list, type : str):
+        """Save data about payment into payment database."""
+        name = self._check_empty_str(name)
+        today = datetime.now().date().strftime("%Y-%m-%d")
+        sum, one = self._get_sum_and_value(value, students, type)
+        student_names = ""
+        for student in students:
+            student_names = student_names + " " + student.surname
+        payment = "{0} {1} {2} {3} {4}\n".format(name, today, sum, one, student_names)
+        with open (self._get_resource_path("payment_database.txt"), "a") as pd:
+            pd.write(payment)
+
+    def _get_sum_and_value (self, value : int, students : list, type : str):
+        """Return sum and value of one student from one payment."""
+        if (len(students) == 0):
+            return 0, 0
+        elif (type == "add_sum"):
+            return value, np.floor(value / len(students))
+        elif (type == "remove_sum"):
+            return -value, -np.ceil(value / len(students))
+        elif (type == "one_add"):
+            return len(students) * value, value
+        else:
+            return -len(students) * value, -value 
+        
+    def _check_empty_str(self, text : str) -> str:
+        """Check if a string is empty, if yes, return text : nezadano."""
+        if (text == ""):
+            return "nezadáno"
+        return text
 
 #### FILE PATH ####
     def _get_resource_path(self, relative_path):
