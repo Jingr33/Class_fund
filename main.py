@@ -8,7 +8,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-# BUGS
-# pokud je clovek oznaceny, nelze ho odebrat
-# nekdy se špatně rozpočítá celková částka mezi studenty

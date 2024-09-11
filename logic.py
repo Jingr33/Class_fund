@@ -229,7 +229,8 @@ class Logic ():
     def _write_payment_db (self, ws) -> None:
         """Write payments data to the class fund excel."""
         self.payments = self._load_payments_db()
-        ws.merge_cells("F1:{0}1".format(get_column_letter(len(self.payments) + 6))) # title merge
+        if (len(self.payments) > 0):
+            ws.merge_cells("F1:{0}1".format(get_column_letter(len(self.payments) + 5))) # title merge
         ws["F1"] = "Platby"
         column = 6
         for i in range(len(self.payments)-1, -1, -1):
@@ -244,7 +245,7 @@ class Logic ():
         """Write a value of each student value of one payment into the excel table."""
         for j in range(len(self.students)):
             if (self.students[j] in payment.who_payed and payment.who_payed[self.students[j]] == True):
-                ws["{0}{1}".format(cell_letter, j+4)] = payment.one_value
+                ws["{0}{1}".format(cell_letter, j+4)] = int(payment.one_value)
 
     def _change_cells_sizes(self, ws) -> None:
         """Update heights and widths od the rows and column for better design."""

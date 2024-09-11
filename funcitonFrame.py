@@ -226,6 +226,7 @@ class Frame (ctk.CTkFrame):
         
     def _update_students_accounts(self):
         """Update content of the overview frame table."""
+        self.logic._save_db()
         for i in range(len(self.students)):
             text = "{0} Kč".format(int(self.students[i].account))
             self.overview_frame.student_frames[i].account.configure(text = text)
