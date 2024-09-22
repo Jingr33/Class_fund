@@ -1,11 +1,11 @@
 import customtkinter as ctk
 import tkinter as tk
 from logic import Logic
-from overviewFrame import Frame as overview_frame
+from overviewFrame import Frame as OverviewFrame
 
 class Frame (ctk.CTkFrame):
     """Frame for functional buttons."""
-    def __init__(self, master: ctk.CTkBaseClass, logic : Logic, overview_frame) -> None:
+    def __init__(self, master: ctk.CTkBaseClass, logic : Logic, overview_frame : OverviewFrame) -> None:
         super().__init__(master)
         self.master = master
         self.logic = logic
@@ -16,24 +16,27 @@ class Frame (ctk.CTkFrame):
 
     def _init_widget_consts(self) -> None:
         """Define a widget constants (colors, padding, sizes, ...)."""
+        # colors
         self.fg_color = "gray17"
+        self.error_color = "red"
+        # paddings
         self.padx = 10
         self.small_padx = 3
+        self.top_pad = (10, 0)
+        #sizes
         self.width = 100
         self.label_width = 150
         self.amount_width = 80
-        self.error_color = "red"
-        self.top_pad = (10, 0)
         
     def _init_widgets (self):
-        """Add all functional frame widgets."""
+        """Add all widgets into the control frame."""
         self._stats_frame()
         self._fund_admin()
         self._students_admin()
 
     def _stats_frame(self):
         """Add frame with fund statistics."""
-        self.stats_frame = ctk.CTkFrame(self)
+        self.stats_frame = ctk.CTkFrame(self) # frame with summary statistics
         self.stats_frame.pack(side = ctk.LEFT, fill = ctk.BOTH, expand = True, ipadx = 3, ipady = 3, padx = 0, pady = 0)
         self.stats_frame.configure(fg_color = self.fg_color)
 
@@ -59,7 +62,7 @@ class Frame (ctk.CTkFrame):
 
     def _fund_admin(self):
         """Add frame with a fund administration."""
-        self.fund_frame = ctk.CTkFrame(self)
+        self.fund_frame = ctk.CTkFrame(self) # frame with fund administration
         self.fund_frame.pack(side = ctk.LEFT, fill = ctk.BOTH, expand = True, ipadx = 3, ipady = 3, padx = 0, pady = 0)
         self.fund_frame.configure(fg_color = self.fg_color)
 
@@ -80,9 +83,9 @@ class Frame (ctk.CTkFrame):
         self.one_input = ctk.CTkEntry(self.fund_frame, textvariable = self.one_var, width = self.width)
         self.one_input.grid(row = 2, column = 1, padx = self.padx, pady = self.top_pad)
 
-        self.add_sum_button = ctk.CTkButton(self.fund_frame, text = "Přidat", command = self._add_sum_event, width = self.width - 20)
+        self.add_sum_button = ctk.CTkButton(self.fund_frame, text = "Přidat", command = self._add_sum_payment, width = self.width - 20)
         self.add_sum_button.grid(row = 1, column = 2, pady = self.top_pad, padx = self.small_padx)
-        self.remove_sum_button = ctk.CTkButton(self.fund_frame, text = "Odebrat", command = self._remove_sum_event, width = self.width - 20)
+        self.remove_sum_button = ctk.CTkButton(self.fund_frame, text = "Odebrat", command = self._remove_sum_payment, width = self.width - 20)
         self.remove_sum_button.grid(row = 1, column = 3, pady = self.top_pad, padx = self.small_padx)
         self.add_one_button = ctk.CTkButton(self.fund_frame, text = "Přidat", command = self._add_one_event, width = self.width - 20)
         self.add_one_button.grid(row = 2, column = 2, pady = self.top_pad, padx = self.small_padx)
@@ -96,8 +99,8 @@ class Frame (ctk.CTkFrame):
         self.create_table.grid(row = 4, column = 2, columnspan = 2)
 
     def _students_admin(self):
-        """add frame with a student administration."""
-        self.students_frame = ctk.CTkFrame(self)
+        """add frame with a student database administration."""
+        self.students_frame = ctk.CTkFrame(self) # frame operating with students
         self.students_frame.pack(side = ctk.LEFT, fill = ctk.BOTH, expand = True, ipadx = 3, ipady = 3, padx = 0, pady = 0)
         self.students_frame.configure(fg_color = self.fg_color)
 
@@ -130,55 +133,43 @@ class Frame (ctk.CTkFrame):
         self.remove_student_btn = ctk.CTkButton(self.students_frame, text = "Odebrat", command = self._remove_student_event, width=self.width)
         self.remove_student_btn.grid(row = 6, column = 1, padx = self.padx)
 
-    def _add_sum_event(self):
+    def _add_sum_payment(self):
         """Add average of the sum to each student."""
-        if (not self._check_int_entry(self.sum_var.get(), 30000, self.fund_admin_error)):
+        if (not self._check_int_entry(self.sum_var.get(), 30000, self.fund_admin_error)): # entry exception check
             return
         sum_value = int(self.sum_var.get())
-        self.logic._add_amount_from_sum(sum_value, self.logic._get_marked_students())
-        self.fund_admin_error.configure(text = "")
-        self.logic._save_payment(self.pay_name.get(), sum_value, self.logic._get_marked_students(), "add_sum")
-        self._clear_entries([self.sum_input, self.pay_name])
-        self._update_students_accounts()
+        self.logic._add_amount_from_sum(sum_value, self.logic._get_elected_students())
+        self._manage_payment(sum_value, "add_sum")
         
-    def _remove_sum_event(self):
+    def _remove_sum_payment(self):
         """Remova average of the sum to each student of it is possible."""
         if (not self._check_int_entry(self.sum_var.get(), 30000, self.fund_admin_error)):
             return
         sum_value = int(self.sum_var.get())
-        checked = self.logic._remove_amount_from_sum(sum_value, self.logic._get_marked_students())
+        checked = self.logic._remove_amount_from_sum(sum_value, self.logic._get_elected_students())
         if (not checked):
             self.fund_admin_error.configure(text = "Částku nebylo možné odečíst. Nízký stav účtu žáka.")
         else:
-            self.fund_admin_error.configure(text = "")
-            self.logic._save_payment(self.pay_name.get(), sum_value, self.logic._get_marked_students(), "remove_sum")
-            self._clear_entries([self.sum_input, self.pay_name])
-            self._update_students_accounts()
+            self._manage_payment(sum_value, "remove_summ")
 
     def _add_one_event(self):
         """Add this amount to every marked student."""
         if (not self._check_int_entry(self.one_var.get(), 5000, self.fund_admin_error)):
             return
         one_value = int(self.one_var.get())
-        self.logic._add_eachone_amount(one_value, self.logic._get_marked_students())
-        self.fund_admin_error.configure(text = "")
-        self.logic._save_payment(self.pay_name.get(), one_value, self.logic._get_marked_students(), "add_one")
-        self._clear_entries([self.one_input, self.pay_name])
-        self._update_students_accounts()
+        self.logic._add_eachone_amount(one_value, self.logic._get_elected_students())
+        self._manage_payment(one_value, "add_one")
 
     def _remove_one_event(self):
         """Remove this amount from account of every marked student if it is possible."""
         if (not self._check_int_entry(self.one_var.get(), 5000, self.fund_admin_error)):
             return
         one_value = int(self.one_var.get())
-        checked = self.logic._remove_eachone_amount(one_value, self.logic._get_marked_students())
+        checked = self.logic._remove_eachone_amount(one_value, self.logic._get_elected_students())
         if (not checked):
             self.fund_admin_error.configure(text = "Částku nebylo možné odečíst. Nízký stav účtu žáka.")
         else:
-            self.fund_admin_error.configure(text = "")
-            self.logic._save_payment(self.pay_name.get(), one_value, self.logic._get_marked_students(), "remove_one")
-            self._clear_entries([self.one_input, self.pay_name])
-            self._update_students_accounts()           
+            self._manage_payment(one_value, "remove_one")
 
     def _add_student_event (self) -> None:
         """Check the entries and add student into a database."""
@@ -187,17 +178,19 @@ class Frame (ctk.CTkFrame):
         if (not first_name or not surname):
             return
         self.logic._add_student(self.var_first_name.get(), self.var_surname.get())
-        self._clear_entries([self.first_name, self.surname])
-        self.overview_frame.create_table_content()
+        self._update_student_gui()
 
     def _remove_student_event (self) -> None:
         """Check entry and remove student from the database."""
         if (not self._check_int_entry(self.var_remove_id.get(), len(self.students), self.remove_stud_error)):
             return
         self.logic._remove_student(int(self.var_remove_id.get()))
+        self._update_student_gui()
+
+    def _update_student_gui (self) -> None:
+        """Update app GUI if the student database was changed."""
         self._clear_entries([self.remove_id])
         self.overview_frame.create_table_content()
-
 
     def _check_int_entry(self, entry : str, max_value : int, error_label : ctk.CTkLabel) -> bool:
         """Check, if the integer entry is in right format."""
@@ -235,8 +228,8 @@ class Frame (ctk.CTkFrame):
         """Update stats of the fund."""
         sum = self.logic._total_amount(self.students)
         ave = self.logic._student_ave(sum, self.students)
-        marked_sum = self.logic._total_amount(self.logic._get_marked_students())
-        marked_ave = self.logic._student_ave(marked_sum, self.logic._get_marked_students())
+        marked_sum = self.logic._total_amount(self.logic._get_elected_students())
+        marked_ave = self.logic._student_ave(marked_sum, self.logic._get_elected_students())
         self.sum_lbl.configure(text = "{0} Kč".format(sum))
         self.ave_lbl.configure(text = "{0} Kč".format(ave))
         self.sum_marked_lbl.configure(text = "{0} Kč".format(marked_sum))
@@ -247,3 +240,10 @@ class Frame (ctk.CTkFrame):
         for entry in entries:
             entry.delete(0, ctk.END)
             entry.insert(0, "")
+
+    def _manage_payment (self, payed_value : int, payment_type : str) -> None:
+        """Update app GUI and save payment into the database, if the payment was successfull. """
+        self.logic._save_payment(self.pay_name.get(), payed_value, self.logic._get_elected_students(), payment_type)
+        self.fund_admin_error.configure(text = "")
+        self._clear_entries([self.sum_input, self.pay_name])
+        self._update_students_accounts()

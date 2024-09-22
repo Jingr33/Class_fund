@@ -58,7 +58,7 @@ class Logic ():
                 line = "{0} {1} {2} {3}\n".format(student.id, student.first_name, student.surname, student.account)
                 f.write(line)
 
-    def _choose_some(self, ids : list) -> list:
+    def _choose_some_students(self, ids : list) -> list:
         """Choose some elected students from all students."""
         elected_students = []
         for student in self.students():
@@ -69,24 +69,24 @@ class Logic ():
     def choose_all_students (self, student_frames, value : bool):
         """Switch to all students selected or to noone stelected variant, if it is clicked to the select all checkbox."""
         if (value):
-            self._set_students_marks(student_frames, True)
+            self._elect_students(student_frames, True)
         else:
-            self._set_students_marks(student_frames, False)
+            self._elect_students(student_frames, False)
 
-    def _set_students_marks(self, student_frames, value : bool) -> None:
+    def _elect_students(self, student_frames, value : bool) -> None:
         """Set all students attributes and checkboxes to entered value."""
         for student in self.students:
             student.choosen = value
         for frame in student_frames:
             frame.value.set(value)
 
-    def _set_one_student_mark(self, elected_student : Student, value : bool) -> None:
+    def _elect_one_student(self, elected_student : Student, value : bool) -> None:
         """Set a right mark value to elected student."""
         for student in self.students:
             if (student == elected_student):
                 student.choosen = value
 
-    def _get_marked_students (self) -> list:
+    def _get_elected_students (self) -> list:
         """Return a list of choosen students."""
         marked = []
         for student in self.students:

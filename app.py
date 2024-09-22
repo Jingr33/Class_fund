@@ -6,7 +6,7 @@ from overviewFrame import Frame as OverwievFrame
 from logic import Logic
 
 class App(ctk.CTk):
-    """Třída pracující s hlavním oknem aplikace."""
+    """Class for managing the main app window."""
     def __init__(self) -> None:
         super().__init__()
         self.title('Třídní fond')
@@ -19,9 +19,10 @@ class App(ctk.CTk):
         self.overview_frame.pack(side=ctk.TOP, fill=ctk.BOTH, expand = True, ipadx=5, ipady=5)
 
     def _kill(self):
+        """Kill the app."""
         self.destroy()
 
     def clear_frame(self, frame : ctk.CTkFrame):
-        """Clear all frame widgets."""
+        """Clear all widgets in the frame."""
         for widget in frame.winfo_children():
             widget.destroy()

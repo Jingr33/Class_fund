@@ -74,7 +74,7 @@ class Frame (ctk.CTkFrame):
 
     def _student_chb_event (self, student : Student, value : bool) -> None:
          """Student checkbox click event method."""
-         self.logic._set_one_student_mark(student, value)
+         self.logic._elect_one_student(student, value)
          self.master.functional_frame.update_stats()
 
     def _mark_all_chb_event(self, value) -> None:
