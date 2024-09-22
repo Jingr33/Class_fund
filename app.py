@@ -1,7 +1,7 @@
 # import knihoven
 import customtkinter as ctk
 import tkinter as tk
-from funcitonFrame import Frame as FuncFrame
+from controlFrame import Frame as FuncFrame
 from overviewFrame import Frame as OverwievFrame
 from logic import Logic
 

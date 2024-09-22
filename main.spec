@@ -5,7 +5,7 @@ a = Analysis(
     ['main.py'],
     pathex=[],
     binaries=[],
-    datas=[('database.txt', '.')],
+    datas=[('database.txt', '.'), ('payment_database.txt', '.')],
     hiddenimports=['pkg_resources'],
     hookspath=[],
     hooksconfig={},
